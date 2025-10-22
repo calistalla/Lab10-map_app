@@ -60,9 +60,8 @@ else:
 # -------------------------------
 # 地图显示
 # -------------------------------
-st.subheader("House Locations on Map")
-st.map(filtered_df[["latitude", "longitude"]])
-
+st.subheader("California Housing Map (1990)")
+st.map(filtered_df[["latitude", "longitude"]].rename(columns={"latitude": "lat", "longitude": "lon"}))
 # -------------------------------
 # 直方图（与示例一致）
 # -------------------------------
