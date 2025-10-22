@@ -7,7 +7,7 @@ st.set_page_config(page_title="California Housing Data (1990) by Harry Wang", la
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv(r"C:\Users\Calista\Desktop\misy225\lab\housing.csv")
+    df = pd.read_csv("housing.csv")
     df = df.rename(columns={"latitude": "lat", "longitude": "lon"})
     return df
 
