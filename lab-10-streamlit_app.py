@@ -69,14 +69,11 @@ elif income_level == "Medium":
     df_filtered = df_filtered[(df_filtered["median_income"] > 2.5) & (df_filtered["median_income"] < 4.5)]
 else:
     df_filtered = df_filtered[df_filtered["median_income"] >= 4.5]
-
+st.map(df_filtered)
 
 plt.style.use("seaborn-v0_8-darkgrid")
 
 vals = df_filtered["median_house_value"].dropna()
-
-st.subheader("House Locations on Map")
-st.map(df_filtered[["latitude", "longitude"]])
 
 # -------------------------------
 # 直方图（与示例一致）
