@@ -1,8 +1,8 @@
-import streamlit as st
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
+import streamlit as st
 
 st.set_page_config(page_title="California Housing Data (1990) by Yifei Li", layout="wide")
 
@@ -14,7 +14,9 @@ def load_data():
 
 df = load_data()
 
-# -------------------------------
+st.title("California Housing Data (1990) by Yifei Li")
+st.markdown("### Minimal Median House Value")
+
 min_price = int(df["median_house_value"].min())
 max_price = int(df["median_house_value"].max())
 
@@ -27,9 +29,6 @@ price_filter = st.slider(
 
 filtered_df = df[df["median_house_value"] >= price_filter]
 
-# -------------------------------
-# 侧边栏：其他过滤器
-# -------------------------------
 st.markdown("### See more filters in the sidebar:")
 st.sidebar.header("Filters")
 
@@ -42,7 +41,6 @@ selected_locations = st.sidebar.multiselect(
 
 filtered_df = filtered_df[filtered_df["ocean_proximity"].isin(selected_locations)]
 
-# 收入水平筛选
 income_level = st.sidebar.radio(
     "Choose income level",
     ("Low", "Medium", "High")
@@ -57,29 +55,21 @@ elif income_level == "Medium":
 else:
     filtered_df = filtered_df[filtered_df["median_income"] >= 4.5]
 
-# -------------------------------
-# 地图显示
-# -------------------------------
 st.subheader("California Housing Map (1990)")
 st.map(filtered_df[["lat", "lon"]])
-# -------------------------------
-# 直方图（与示例一致）
-# -------------------------------
-st.subheader("Histogram of Median House Value")
 
-sns.set(style="darkgrid")  # ✅ 设置 seaborn 风格
+st.subheader("Histogram of Median House Value")
+sns.set(style="darkgrid")  
 plt.figure(figsize=(10, 6))
 
 plt.hist(
     filtered_df["median_house_value"],
     bins=30,
-    color="#1f77b4",   # seaborn 默认蓝色
+    color="#215F8B",   
     edgecolor="none"
 )
 
-plt.xlabel("Median House Value ($)")
+plt.xlabel("Median House Value")
 plt.ylabel("Count")
 plt.grid(True)
-
-# 不设置标题、不改变字体权重
 st.pyplot(plt.gcf())
