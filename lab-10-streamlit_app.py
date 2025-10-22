@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.set_page_config(page_title="California Housing Data (1990) by Harry Wang", layout="wide")
+st.set_page_config(page_title="California Housing Data (1990) by Yifei Li", layout="wide")
 
 @st.cache_data
 def load_data():
@@ -13,35 +13,7 @@ def load_data():
     return df
 
 df = load_data()
-with st.sidebar:
-    st.markdown(
-        """
-        <style>
-        [data-testid="stSidebar"] {
-            background-color: #F7F8FB;
-            border-right: 1px solid #E0E0E0;
-        }
-        div[data-testid="stSidebar"] h2 {
-            font-size: 1.3rem;
-            color: #333;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
 
-    st.header("Choose the location type")
-    location_options = df["ocean_proximity"].unique().tolist()
-    selected_locations = st.multiselect(
-        "",
-        location_options,
-        default=location_options
-    )
-
-    st.header("Choose income level")
-    income_level = st.radio("", ["Low", "Medium", "High"])
-
-st.title("California Housing Data (1990) by Yifei Li")
 min_price = int(df["median_house_value"].min())
 max_price = int(df["median_house_value"].max())
 
