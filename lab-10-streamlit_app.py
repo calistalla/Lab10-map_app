@@ -13,8 +13,6 @@ def load_data():
     return df
 
 df = load_data()
-
-
 with st.sidebar:
     st.markdown(
         """
@@ -43,57 +41,64 @@ with st.sidebar:
     st.header("Choose income level")
     income_level = st.radio("", ["Low", "Medium", "High"])
 
-st.title("California Housing Data (1990) by Harry Wang")
+st.title("California Housing Data (1990) by Yifei Li")
 min_price = int(df["median_house_value"].min())
-max_price = 550000
+max_price = int(df["median_house_value"].max())
 
-price_slider = st.slider(
-    "Minimal Median House Value",
+price_filter = st.slider(
+    "Select Minimal Median House Value",
     min_price,
     max_price,
-    value=(min_price, 550000),
-    step=5000
+    200000  
 )
 
-st.write("See more filters in the sidebar:")
+filtered_df = df[df["median_house_value"] >= price_filter]
 
-df_filtered = df[
-    (df["median_house_value"] >= price_slider[0]) &
-    (df["median_house_value"] <= price_slider[1]) &
-    (df["ocean_proximity"].isin(selected_locations))
-]
+st.markdown("### See more filters in the sidebar:")
+
+st.sidebar.header("Filters")
+
+location_types = df["ocean_proximity"].unique()
+selected_locations = st.sidebar.multiselect(
+    "Choose the location type",
+    options=location_types,
+    default=location_types
+)
+
+filtered_df = filtered_df[filtered_df["ocean_proximity"].isin(selected_locations)]
+
+# Radio for income level
+income_level = st.sidebar.radio(
+    "Choose income level",
+    ("Low", "Medium", "High")
+)
 
 if income_level == "Low":
-    df_filtered = df_filtered[df_filtered["median_income"] <= 2.5]
+    filtered_df = filtered_df[filtered_df["median_income"] <= 2.5]
 elif income_level == "Medium":
-    df_filtered = df_filtered[(df_filtered["median_income"] > 2.5) & (df_filtered["median_income"] < 4.5)]
+    filtered_df = filtered_df[
+        (filtered_df["median_income"] > 2.5) & (filtered_df["median_income"] < 4.5)
+    ]
 else:
-    df_filtered = df_filtered[df_filtered["median_income"] >= 4.5]
-st.map(df_filtered)
+    filtered_df = filtered_df[filtered_df["median_income"] >= 4.5]
 
-plt.style.use("seaborn-v0_8-darkgrid")
+st.subheader("House Locations on Map")
+st.map(filtered_df[["latitude", "longitude"]])
 
-vals = df_filtered["median_house_value"].dropna()
-
-# -------------------------------
-# 直方图（与示例一致）
-# -------------------------------
 st.subheader("Histogram of Median House Value")
 
-sns.set(style="darkgrid")  # ✅ 设置 seaborn 风格
-plt.figure(figsize=(10, 6))
-
-plt.hist(
-    df_filtered["median_house_value"],
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.hist(
+    filtered_df["median_house_value"],
     bins=30,
-    color="#1f77b4",   # seaborn 默认蓝色
-    edgecolor="none"
+    color="#2E86C1",      
+    edgecolor="white",   
+    linewidth=0.8,
+    alpha=0.9
 )
+ax.set_title("Distribution of Median House Value", fontsize=14, weight="bold")
+ax.set_xlabel("Median House Value ($)", fontsize=12)
+ax.set_ylabel("Count", fontsize=12)
+ax.grid(alpha=0.3)
 
-plt.xlabel("Median House Value ($)")
-plt.ylabel("Count")
-plt.grid(True)
-
-# 不设置标题、不改变字体权重
-st.pyplot(plt.gcf())
-st.caption("Data Source: California Housing Dataset (1990)")
+st.pyplot(fig)
