@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.set_page_config(page_title="California Housing Data (1990) by Harry Wang", layout="wide")
 
@@ -69,35 +70,33 @@ elif income_level == "Medium":
 else:
     df_filtered = df_filtered[df_filtered["median_income"] >= 4.5]
 
-st.map(df_filtered)
 
 plt.style.use("seaborn-v0_8-darkgrid")
 
 vals = df_filtered["median_house_value"].dropna()
 
-x_min, x_max = 200_000, 550_000
-bins = np.linspace(x_min, x_max, 31)
-xticks = [200_000, 250_000, 300_000, 350_000, 400_000, 450_000, 500_000, 550_000]
+st.subheader("House Locations on Map")
+st.map(df_filtered[["latitude", "longitude"]])
 
-vals = vals[(vals >= x_min) & (vals <= x_max)]
+# -------------------------------
+# 直方图（与示例一致）
+# -------------------------------
+st.subheader("Histogram of Median House Value")
 
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.hist(
-    vals,
-    bins=bins,
-    edgecolor="white",
-    linewidth=0.5,
-    color="#3B5BA9",
-    alpha=0.95
+sns.set(style="darkgrid")  # ✅ 设置 seaborn 风格
+plt.figure(figsize=(10, 6))
+
+plt.hist(
+    df_filtered["median_house_value"],
+    bins=30,
+    color="#1f77b4",   # seaborn 默认蓝色
+    edgecolor="none"
 )
 
-ax.set_xlim(x_min, x_max)
-ax.set_xticks(xticks)
-ax.set_xlabel("Median House Value ($)", fontsize=12)
-ax.set_ylabel("Count", fontsize=12)
-ax.set_title("Distribution of Median House Values (30 bins)", fontsize=14, fontweight="bold")
-ax.grid(True, which="major", linestyle="-", alpha=0.3)
+plt.xlabel("Median House Value ($)")
+plt.ylabel("Count")
+plt.grid(True)
 
-st.pyplot(fig)
-
+# 不设置标题、不改变字体权重
+st.pyplot(plt.gcf())
 st.caption("Data Source: California Housing Dataset (1990)")
