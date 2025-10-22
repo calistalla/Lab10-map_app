@@ -75,9 +75,9 @@ plt.style.use("seaborn-v0_8-darkgrid")
 
 vals = df_filtered["median_house_value"].dropna()
 
-x_min, x_max = 0, 550_000
+x_min, x_max = 200_000, 550_000
 bins = np.linspace(x_min, x_max, 31)
-xticks = [0,200_000, 250_000, 300_000, 350_000, 400_000, 450_000, 500_000, 550_000]
+xticks = [0, 200_000, 250_000, 300_000, 350_000, 400_000, 450_000, 500_000, 550_000]
 
 vals = vals[(vals >= x_min) & (vals <= x_max)]
 
